@@ -4,6 +4,7 @@ import (
 	"context"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"log"
+	"os"
 	"sync"
 	"time"
 )
@@ -15,7 +16,15 @@ func failOnError(err error, msg string) {
 }
 
 func main() {
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	connRabbit := os.Args[1]
+	if connRabbit == "" {
+		panic("RABBITMQ_HOST environment variable not set")
+	}
+
+	log.Println("connRabbit: ", connRabbit)
+
+	// amqp.Dial("amqp://guest:guest@localhost:5672/")
+	conn, err := amqp.Dial(connRabbit)
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
